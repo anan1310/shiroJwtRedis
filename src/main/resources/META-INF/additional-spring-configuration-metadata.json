@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "server.servlet.context-path",
+      "type": "java.lang.String",
+      "description": "Description for server.servlet.context-path."
+    },
+    {
+      "name": "server.servlet.context-path",
+      "type": "java.lang.String",
+      "description": "Description for server.servlet.context-path."
+    }
+  ] }
