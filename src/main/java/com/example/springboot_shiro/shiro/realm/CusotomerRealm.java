@@ -55,8 +55,6 @@ public class CusotomerRealm extends AuthorizingRealm {
         User user = userService.findRolesByUserName(primaryPrincipal);
         if (!CollectionUtils.isEmpty(user.getRoles())){
             SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-
-
 //            角色信息
             user.getRoles().forEach(role -> {
                 simpleAuthorizationInfo.addRole(role.getName());
