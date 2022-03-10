@@ -3,16 +3,23 @@ package com.example.springboot_shiro.controller;
 import com.example.springboot_shiro.entity.User;
 
 import com.example.springboot_shiro.service.UserService;
+import com.example.springboot_shiro.utils.JedisUtil;
+import com.example.springboot_shiro.utils.JwtUtils;
 import com.example.springboot_shiro.utils.VerifyCodeUtils;
+import com.example.springboot_shiro.utils.common.Constant;
 import com.sun.deploy.net.HttpResponse;
+import lombok.extern.log4j.Log4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -20,10 +27,18 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 //@RestController("user")
-@Controller
-@RequestMapping("user")
-public class UserController {
+//@Controller
+//@RequestMapping("user")
 
+@RestController
+@RequestMapping("/user")
+@PropertySource("classpath:config.properties")
+public class UserController {
+    /**
+     * RefreshToken过期时间
+     */
+    @Value("${refreshTokenExpireTime}")
+    private String refreshTokenExpireTime;
     @Autowired
     private UserService userService;
 
@@ -51,15 +66,27 @@ public class UserController {
 
     //    登录页面
     @RequestMapping("login")
-    public String login(String username, String password, String code, HttpSession session) {
+    public String login(String username, String password, String code, HttpSession session, HttpServletResponse httpServletResponse) {
 //       获取到验证码进行比对
         String codes = (String) session.getAttribute("code");
+        System.out.println("登录时候的验证码：" + codes);
         try {
             if (codes.equalsIgnoreCase(code)) { //比较不区分大小写
 //            获取主体对象
                 Subject subject = SecurityUtils.getSubject();
                 UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username, password);
                 subject.login(usernamePasswordToken);
+                // 设置RefreshToken，时间戳为当前时间戳，直接设置即可(不用先删后设，会覆盖已有的RefreshToken)
+                String currentTimeMillis = String.valueOf(System.currentTimeMillis());
+                System.out.println("获取的用户名：" + usernamePasswordToken.getUsername());
+                String result=JedisUtil.setObject(Constant.PREFIX_SHIRO_REFRESH_TOKEN + usernamePasswordToken.getUsername(), currentTimeMillis, Integer.parseInt(refreshTokenExpireTime));
+//
+                System.out.println("输出的结果:"+result);
+//             添加token到请求头中
+                String token = JwtUtils.sign(usernamePasswordToken.getUsername(), currentTimeMillis);
+                httpServletResponse.setHeader("Authorization", token);
+                httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
+
                 return "redirect:/index.jsp";
 
             } else {
@@ -71,7 +98,7 @@ public class UserController {
         } catch (IncorrectCredentialsException e) {
             e.printStackTrace();
             System.out.println("密码错误");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }

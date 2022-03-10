@@ -4,6 +4,7 @@ package com.example.springboot_shiro.config;
 import com.example.springboot_shiro.shiro.jwt.JwtFilter;
 
 import com.example.springboot_shiro.shiro.realm.UserRealm;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
@@ -95,14 +96,15 @@ public class ShiroConfig {
 public class ShiroConfig {
 
 
-
     @Bean("shiroFilter")
     public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         //添加自定义的jwt过滤器到shiro的监听工厂中
+
         HashMap<String, Filter> filterMap = new HashMap<>(16);
         filterMap.put("jwt", new JwtFilter());
         shiroFilterFactoryBean.setFilters(filterMap);
+
 //        添加到安全管理器
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //        配置系统受限资源
@@ -113,7 +115,6 @@ public class ShiroConfig {
         map.put("/register.jsp", "anon");
         map.put("/user/getImage", "anon");//验证码
         map.put("/**", "authc"); //拦截所有的请求
-
         //        默认认证界面路径
         shiroFilterFactoryBean.setLoginUrl("/login.jsp"); //身份认证失败后，，跳转到登录页面
         //        所用请求必须经过我们的自己的JWTFilter
@@ -128,7 +129,13 @@ public class ShiroConfig {
     @Bean("securityManager")
     public DefaultSecurityManager defaultSecurityManager(UserRealm userRealm) {
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
+        //密码匹配机制
+        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+        hashedCredentialsMatcher.setHashAlgorithmName("MD5");//设置算法
+        hashedCredentialsMatcher.setHashIterations(1024); //hash散列次数
+        userRealm.setCredentialsMatcher(hashedCredentialsMatcher);
 //        添加我们的自定义realm到安全管理器
+
         defaultWebSecurityManager.setRealm(userRealm);
 //        关闭自带的session
         DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();

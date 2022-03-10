@@ -11,6 +11,8 @@ import com.example.springboot_shiro.utils.common.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -21,6 +23,8 @@ import java.util.Date;
  * @author anzhijie
  * @date 2022/03/04
  */
+@PropertySource("classpath:config.properties")
+@Component
 public class JwtUtils {
     /**
      * logger
@@ -102,8 +106,10 @@ public class JwtUtils {
     public static String sign(String account, String currentTimeMillis) {
 
         try {
+
             //账号加JWT私钥加密（秘钥）
             String secret = account + Base64ConvertUtil.decode(encryptJWTKey);
+
             // 此处过期时间是以毫秒为单位，所以乘以1000
             Date date = new Date(System.currentTimeMillis() + Long.parseLong(accessTokenExpireTime) * 1000);
             Algorithm algorithm = Algorithm.HMAC256(secret);

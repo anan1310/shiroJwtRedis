@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 //自定义realm
+/*
 @Component
 public class CusotomerRealm extends AuthorizingRealm {
 
@@ -37,19 +38,19 @@ public class CusotomerRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
 //1，获取身份信息
         String primaryPrincipal =(String) principalCollection.getPrimaryPrincipal();
-        /*
-        if ("anzhijie".equals(primaryPrincipal)){
-            SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-//            添加角色
-            simpleAuthorizationInfo.addRole("admin");
-            simpleAuthorizationInfo.addRole("user");
-//            赋予权限
-            simpleAuthorizationInfo.addStringPermission("user:add:*");
-            simpleAuthorizationInfo.addStringPermission("user:update:01");
-            return  simpleAuthorizationInfo;
+
+//        if ("anzhijie".equals(primaryPrincipal)){
+//            SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+////            添加角色
+//            simpleAuthorizationInfo.addRole("admin");
+//            simpleAuthorizationInfo.addRole("user");
+////            赋予权限
+//            simpleAuthorizationInfo.addStringPermission("user:add:*");
+//            simpleAuthorizationInfo.addStringPermission("user:update:01");
+//            return  simpleAuthorizationInfo;
 
         }
-         */
+
 
 //2，根据身份信息获取角色和权限信息
         User user = userService.findRolesByUserName(primaryPrincipal);
@@ -99,7 +100,7 @@ public class CusotomerRealm extends AuthorizingRealm {
         return null;
     }
 }
-
+*/
 /*
 * 基于权限管理 ：role
 *

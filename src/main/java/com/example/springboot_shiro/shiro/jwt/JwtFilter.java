@@ -63,6 +63,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
                 return false;
             }
         } else {
+
         // 没有携带Token
             HttpServletRequest httpServletRequest = WebUtils.toHttp(request);
             // 获取当前请求类型
