@@ -7,7 +7,9 @@ import java.util.Base64;
  * base64工具（用于编码和解码，这个过程是可逆的）
  */
 public class Base64ConvertUtil {
-    private Base64ConvertUtil() {}
+    private Base64ConvertUtil() {
+    }
+
     /**
      * 编码
      *
@@ -33,5 +35,10 @@ public class Base64ConvertUtil {
         return new String(decodeBytes);
     }
 
+    //测试解码和编码
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        String token = decode("eyJjdXJyZW50VGltZU1pbGxpcyI6IjE2NDcwOTQwNTczOTEiLCJleHAiOjE2NDcwOTQzNTcsInVzZXJuYW1lIjoiYW56aGlqaWUifQ");
+        System.out.println(token);
+    }
 
 }

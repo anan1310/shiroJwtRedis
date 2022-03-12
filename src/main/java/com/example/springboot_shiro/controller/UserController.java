@@ -76,13 +76,13 @@ public class UserController {
                 Subject subject = SecurityUtils.getSubject();
                 UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username, password);
                 subject.login(usernamePasswordToken);
+
+
                 // 设置RefreshToken，时间戳为当前时间戳，直接设置即可(不用先删后设，会覆盖已有的RefreshToken)
-                String currentTimeMillis = String.valueOf(System.currentTimeMillis());
-                System.out.println("获取的用户名：" + usernamePasswordToken.getUsername());
-                String result=JedisUtil.setObject(Constant.PREFIX_SHIRO_REFRESH_TOKEN + usernamePasswordToken.getUsername(), currentTimeMillis, Integer.parseInt(refreshTokenExpireTime));
-//
-                System.out.println("输出的结果:"+result);
-//             添加token到请求头中
+                String currentTimeMillis = String.valueOf(System.currentTimeMillis());  //获取当前时间
+//                shiro:refresh_token:anzhijie 添加
+                JedisUtil.setObject(Constant.PREFIX_SHIRO_REFRESH_TOKEN + Constant.ACCOUNT, currentTimeMillis, Integer.parseInt(refreshTokenExpireTime));
+//              添加token到请求头中
                 String token = JwtUtils.sign(usernamePasswordToken.getUsername(), currentTimeMillis);
                 httpServletResponse.setHeader("Authorization", token);
                 httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");

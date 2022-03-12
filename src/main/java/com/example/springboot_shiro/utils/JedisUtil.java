@@ -111,7 +111,7 @@ public class JedisUtil {
     }
 
     /**
-     * 设置redis键值-object-expiretime
+     * 设置redis键值-object-expiretime ,设置当前key的过期时间
      *
      * @param key
      * @param value
@@ -160,8 +160,7 @@ public class JedisUtil {
      */
     public static String setJson(String key, String value) {
         try (
-                Jedis jedis = jedisPool.getResource())
-        {
+                Jedis jedis = jedisPool.getResource()) {
             return jedis.set(key, value);
         } catch (Exception e) {
             throw new CustomException("设置Redis键值setJson方法异常:key=" + key + " value=" + value + " cause=" + e.getMessage());
@@ -272,7 +271,6 @@ public class JedisUtil {
             throw new CustomException("获取Redis键过期剩余时间ttl方法异常:key=" + key + " cause=" + e.getMessage());
         }
     }
-
 
 
 }
